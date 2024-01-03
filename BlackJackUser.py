@@ -2,7 +2,6 @@ import random
 import os
 
 CARDS = {"A": 10,
-         "1": 1,
          "2": 2,
          "3": 3,
          "4": 4,
@@ -46,5 +45,21 @@ class BlackjackUser:
         if self.calculate_and_return_total_of_cards() > 21:
             return True
         return False
+    
+    def is_a_blackjack(self):
+        if self.calculate_and_return_total_of_cards() == 21:
+            return True
+        return False
         
+    def get_only_first_card(self):
+        # return list(self.cards.keys())[0]
+        self.calculate_and_return_total_of_cards()
+        return next(iter(self.cards))
+    
         
+    def get_total_cards_with_first_element_only(self):
+        self.calculate_and_return_total_of_cards()
+        return list(self.cards)[0]
+        # return next(iter(self.cards))
+    
+    
