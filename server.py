@@ -44,28 +44,34 @@ def computer_turn(user_player, computer_player):
     
     print(display_cards_and_scores(user_player, computer_player, show_computer_cards=True))
     
-    if return_status_of_players(user_player, computer_player) != "User Lost\nComputer Wins!" or return_status_of_players(user_player, computer_player) != "Draw":
-        return user_player, computer_player
+    status_of_players = return_status_of_players(user_player, computer_player)
     
-    count = random.randint(0, 5)
-    user_player.calculate_and_return_total_of_cards()
-    for i in range(count):
-        computer_player.cards.append(computer_player.get_new_card())
-        # time.sleep(60) 
-        computer_player.calculate_and_return_total_of_cards()
-        print("Waiting for Computer's turn...")
-        time.sleep(3)
-        print(display_cards_and_scores(user_player, computer_player, show_computer_cards=True))
+    if status_of_players == "User Wins!\nComputer Lost":
+        count = random.randint(0, 5)
+        user_player.calculate_and_return_total_of_cards()
+        for i in range(count):
+            computer_player.cards.append(computer_player.get_new_card())
+            computer_player.calculate_and_return_total_of_cards()
+            print("Waiting for Computer's turn...")
+            time.sleep(3)
+            print(display_cards_and_scores(user_player, computer_player, show_computer_cards=True))
+            
+            
+            if computer_player.is_a_blackjack():
+                print("Computer has The BlackJack!")
+                break
+            if computer_player.total_user_cards > 21:
+                print("Computer is Busted!")
+                break
+            
+            status_of_players = return_status_of_players(user_player, computer_player)
+            if status_of_players == "User Lost\nComputer Wins!":
+                break
+                
         
-        
-        if computer_player.is_a_blackjack():
-            print("Computer has The BlackJack!")
-            break
-        if computer_player.total_user_cards > 21:
-            print("Computer is Busted!")
-            break
-    
     return user_player, computer_player
+    
+    
     
 def play_blackjack():
     os.system('cls')
@@ -76,20 +82,21 @@ def play_blackjack():
     game_off = False
     print(display_cards_and_scores(user_player, computer_player))
 
-    def game_continue(user_player, computer_player, game_off):
+    def game_continue(user_player, computer_player, game_off = False):
             
         
         cont = input("Type 'y' to get another card, type 'n' to pass\n")
         
         if cont.capitalize() == 'N':
             user_player, computer_player = computer_turn(user_player, computer_player)
-            game_off = False
+            game_off = True
             return user_player, computer_player, game_off
                 
         else:
             user_player.cards.append(user_player.get_new_card())
             print(display_cards_and_scores(user_player, computer_player))
-            
+            user_player.calculate_and_return_total_of_cards()
+            computer_player.calculate_and_return_total_of_cards()
                 
             if user_player.is_a_blackjack():
                 print("User has The BlackJack!")
@@ -100,18 +107,13 @@ def play_blackjack():
                 user_player, computer_player = computer_turn(user_player, computer_player)
                 game_off = True
 
-            if game_off:
-                return user_player, computer_player, game_off
+            return user_player, computer_player, game_off
         
     while not game_off:
         user_player, computer_player, game_off = game_continue(user_player, computer_player, game_off)
     
     print(return_status_of_players(user_player, computer_player))
                 
-    
-        
-#     play_again = input("Do you want to play again blackjack? Type 'y' or 'n': ")
-
     
         
 play_blackjack()
